@@ -2,6 +2,7 @@ package com.palmergames.bukkit.towny.object;
 
 import com.google.common.base.Preconditions;
 import com.palmergames.bukkit.towny.Towny;
+import com.palmergames.bukkit.towny.TownyAPI;
 import com.palmergames.bukkit.towny.TownyEconomyHandler;
 import com.palmergames.bukkit.towny.TownyMessaging;
 import com.palmergames.bukkit.towny.TownySettings;
@@ -807,18 +808,15 @@ public class Resident extends TownyObject implements InviteReceiver, EconomyHand
 	@Override
 	public Account getAccount() {
 		if (account == null) {
-
 			String accountName = StringMgmt.trimMaxLength(getName(), 32);
-			World world;
 
-			Player player = getPlayer();
-			if (player != null) {
-				world = player.getWorld();
-			} else {
-				world = BukkitTools.getWorlds().get(0);
-			}
-
-			account = new EconomyAccount(accountName, world);
+			account = new EconomyAccount(accountName, this.uuid, () -> {
+				final Player player = getPlayer();
+				if (player != null)
+					return TownyAPI.getInstance().getTownyWorld(player.getWorld());
+				else
+					return TownyUniverse.getInstance().getTownyWorlds().get(0);
+			});
 		}
 		
 		return account;

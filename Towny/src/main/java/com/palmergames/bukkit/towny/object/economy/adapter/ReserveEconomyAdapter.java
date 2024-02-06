@@ -1,7 +1,7 @@
 package com.palmergames.bukkit.towny.object.economy.adapter;
 
+import com.palmergames.bukkit.towny.object.economy.Account;
 import net.tnemc.core.economy.EconomyAPI;
-import org.bukkit.World;
 
 import java.math.BigDecimal;
 
@@ -14,41 +14,41 @@ public class ReserveEconomyAdapter implements EconomyAdapter {
 	}
 
 	@Override
-	public boolean add(String accountName, double amount, World world) {
+	public boolean add(Account account, double amount) {
 		BigDecimal bd = BigDecimal.valueOf(amount);
-		return economy.addHoldingsDetail(accountName, bd, world.getName()).success();
+		return economy.addHoldingsDetail(account.getUUID(), bd, account.getWorld().getName()).success();
 	}
 
 	@Override
-	public boolean subtract(String accountName, double amount, World world) {
+	public boolean subtract(Account account, double amount) {
 		BigDecimal bd = BigDecimal.valueOf(amount);
-		return economy.removeHoldingsDetail(accountName, bd, world.getName()).success();
+		return economy.removeHoldingsDetail(account.getUUID(), bd, account.getWorld().getName()).success();
 	}
 
 	@Override
-	public boolean hasAccount(String accountName) {
-		return economy.hasAccountDetail(accountName).success();
+	public boolean hasAccount(Account account) {
+		return economy.hasAccountDetail(account.getUUID()).success();
 	}
 
 	@Override
-	public double getBalance(String accountName, World world) {
-		return economy.getHoldings(accountName, world.getName()).doubleValue();
+	public double getBalance(Account account) {
+		return economy.getHoldings(account.getUUID(), account.getWorld().getName()).doubleValue();
 	}
 
 	@Override
-	public void newAccount(String accountName) {
-		economy.createAccountDetail(accountName).success();
+	public void newAccount(Account account) {
+		economy.createAccountDetail(account.getUUID()).success();
 	}
 
 	@Override
-	public void deleteAccount(String accountName) {
-		economy.deleteAccountDetail(accountName);
+	public void deleteAccount(Account account) {
+		economy.deleteAccountDetail(account.getUUID());
 	}
 
 	@Override
-	public boolean setBalance(String accountName, double amount, World world) {
+	public boolean setBalance(Account account, double amount) {
 		BigDecimal bd = BigDecimal.valueOf(amount);
-		return economy.setHoldingsDetail(accountName, bd, world.getName()).success();
+		return economy.setHoldingsDetail(account.getUUID(), bd, account.getWorld().getName()).success();
 	}
 
 	@Override
