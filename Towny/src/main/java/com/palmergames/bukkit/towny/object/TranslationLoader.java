@@ -226,7 +226,7 @@ public class TranslationLoader {
 
 				// If the contents of the jar's lang file don't match the saved reference file's contents, replace the contents.
 				if (!string.equals(lines.collect(Collectors.joining("\n"))))
-					FileMgmt.writeString(langPath, string);
+					Files.writeString(langPath, string);
 			}
 		} catch (IOException e) {
 			plugin.getLogger().log(Level.WARNING, "Failed to copy " + "'/lang/" + lang + ".yml'" + " from the JAR to '" + langPath.toAbsolutePath() + "' during a reference language file update.", e);
