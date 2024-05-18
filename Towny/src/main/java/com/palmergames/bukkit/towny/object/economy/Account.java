@@ -172,11 +172,12 @@ public abstract class Account implements Nameable, Identifiable {
 	 *
 	 * @return Bukkit world for the object
 	 */
-	@Deprecated
+	@Nullable
 	public World getBukkitWorld() {
-		return BukkitTools.getWorlds().get(0);
+		return getWorld().getBukkitWorld();
 	}
 	
+	@NotNull
 	public TownyWorld getWorld() {
 		return this.worldSupplier.get();
 	}
