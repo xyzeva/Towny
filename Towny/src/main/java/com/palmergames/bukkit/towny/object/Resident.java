@@ -41,7 +41,6 @@ import com.palmergames.util.StringMgmt;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.audience.ForwardingAudience;
 import org.bukkit.Location;
-import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.jetbrains.annotations.ApiStatus;
@@ -810,7 +809,11 @@ public class Resident extends TownyObject implements InviteReceiver, EconomyHand
 		if (account == null) {
 			String accountName = StringMgmt.trimMaxLength(getName(), 32);
 
-			account = new EconomyAccount(accountName, this.uuid, () -> {
+			UUID uuid = this.uuid;
+			if (this.isNPC())
+				uuid = Account.modifyNPCUUID(uuid);
+
+			account = new EconomyAccount(accountName, uuid, () -> {
 				final Player player = getPlayer();
 				if (player != null)
 					return TownyAPI.getInstance().getTownyWorld(player.getWorld());

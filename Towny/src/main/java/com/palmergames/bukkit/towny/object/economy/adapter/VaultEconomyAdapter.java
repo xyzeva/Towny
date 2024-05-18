@@ -6,10 +6,15 @@ import net.milkbowl.vault.economy.EconomyResponse;
 
 public class VaultEconomyAdapter implements EconomyAdapter {
 	
-	private final Economy economy;
+	protected final Economy economy;
 	
 	public VaultEconomyAdapter(Economy economy) {
 		this.economy = economy;
+	}
+	
+	@Override
+	public String name() {
+		return economy.getName();
 	}
 
 	@Override
@@ -65,5 +70,37 @@ public class VaultEconomyAdapter implements EconomyAdapter {
 	@Override
 	public String getFormattedBalance(double balance) {
 		return economy.format(balance);
+	}
+
+	@SuppressWarnings("deprecation")
+	public static class Legacy extends VaultEconomyAdapter {
+		public Legacy(Economy economy) {
+			super(economy);
+		}
+
+		@Override
+		public boolean add(Account account, double amount) {
+			return economy.depositPlayer(account.getName(), account.getWorld().getName(), amount).type == EconomyResponse.ResponseType.SUCCESS;
+		}
+
+		@Override
+		public boolean subtract(Account account, double amount) {
+			return economy.withdrawPlayer(account.getName(), account.getWorld().getName(), amount).type == EconomyResponse.ResponseType.SUCCESS;
+		}
+
+		@Override
+		public boolean hasAccount(Account account) {
+			return economy.hasAccount(account.getName(), account.getWorld().getName());
+		}
+
+		@Override
+		public double getBalance(Account account) {
+			return economy.getBalance(account.getName(), account.getWorld().getName());
+		}
+
+		@Override
+		public void newAccount(Account account) {
+			economy.createPlayerAccount(account.getName(), account.getWorld().getName());
+		}
 	}
 }

@@ -4,23 +4,22 @@ import com.palmergames.bukkit.towny.event.economy.TownyPreTransactionEvent;
 import com.palmergames.bukkit.towny.event.economy.TownyTransactionEvent;
 import com.palmergames.bukkit.towny.object.EconomyAccount;
 import com.palmergames.bukkit.towny.object.economy.Account;
-import com.palmergames.bukkit.towny.object.economy.adapter.ReserveEconomyAdapter;
 import com.palmergames.bukkit.towny.object.Nation;
 import com.palmergames.bukkit.towny.object.Resident;
 import com.palmergames.bukkit.towny.object.Town;
 import com.palmergames.bukkit.towny.object.Transaction;
 import com.palmergames.bukkit.towny.object.TransactionType;
 import com.palmergames.bukkit.towny.object.economy.adapter.EconomyAdapter;
-import com.palmergames.bukkit.towny.object.economy.adapter.VaultEconomyAdapter;
+import com.palmergames.bukkit.towny.object.economy.provider.EconomyProvider;
+import com.palmergames.bukkit.towny.object.economy.provider.ReserveEconomyProvider;
+import com.palmergames.bukkit.towny.object.economy.provider.VaultEconomyProvider;
 import com.palmergames.bukkit.util.BukkitTools;
 import com.palmergames.bukkit.util.Colors;
 
-import net.milkbowl.vault.economy.Economy;
 import net.tnemc.core.Reserve;
 
 import org.bukkit.World;
-import org.bukkit.plugin.Plugin;
-import org.bukkit.plugin.RegisteredServiceProvider;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -38,7 +37,7 @@ public class TownyEconomyHandler {
 
 	private static Towny plugin = null;
 	private static EconomyAdapter economy = null;
-	private static EcoType Type = EcoType.NONE;
+	private static EconomyProvider provider = null;
 	private static String version = "";
 	
 	private static final Executor ECONOMY_EXECUTOR = runnable -> {
@@ -108,7 +107,7 @@ public class TownyEconomyHandler {
 	 * @return the economy type we have detected.
 	 */
 	public static EcoType getType() {
-		return Type;
+		return provider == null ? EcoType.NONE : provider.economyType();
 	}
 
 	/**
@@ -117,7 +116,7 @@ public class TownyEconomyHandler {
 	 * @return true if we found one.
 	 */
 	public static boolean isActive() {
-		return (Type != EcoType.NONE && TownySettings.isUsingEconomy());
+		return (getType() != EcoType.NONE && TownySettings.isUsingEconomy());
 	}
 
 	/**
@@ -128,52 +127,28 @@ public class TownyEconomyHandler {
 	}
 
 	/**
-	 * Internal function to set the version string.
-	 * 
-	 * @param version The version of this eco.
-	 */
-	private static void setVersion(String version) {
-		TownyEconomyHandler.version = version;
-	}
-
-	/**
 	 * Find and configure a suitable economy provider
 	 * 
 	 * @return true if successful.
 	 */
 	public static boolean setupEconomy() {
 
-		Plugin economyProvider;
+		if (plugin.getServer().getPluginManager().isPluginEnabled("Vault"))
+			provider = new VaultEconomyProvider();
+		else if (plugin.getServer().getPluginManager().isPluginEnabled("Reserve"))
+			provider = new ReserveEconomyProvider((Reserve) plugin.getServer().getPluginManager().getPlugin("Reserve"));
+		
+		if (provider != null) {
+			economy = provider.mainAdapter();
 
-		/*
-		 * Attempt to find Vault for Economy handling
-		 */
-		try {
-			RegisteredServiceProvider<Economy> vaultEcoProvider = plugin.getServer().getServicesManager().getRegistration(net.milkbowl.vault.economy.Economy.class);
-			if (vaultEcoProvider != null) {
-				/*
-				 * Flag as using Vault hooks
-				 */
-				economy = new VaultEconomyAdapter(vaultEcoProvider.getProvider());
-				setVersion(String.format("%s %s", vaultEcoProvider.getProvider().getName(), "via Vault" ));
-				Type = EcoType.VAULT;
+			if (economy != null) {
+				version = economy.name() + " via " + provider.name();
+				
+				if (provider.isLegacy())
+					version += " (Legacy)";
+				
 				return true;
 			}
-		} catch (NoClassDefFoundError ignored) {
-		}
-
-		/*
-		 * Attempt to find Reserve for Economy handling
-		 */
-		economyProvider = plugin.getServer().getPluginManager().getPlugin("Reserve");
-		if(economyProvider != null && ((Reserve)economyProvider).economyProvided()) {
-			/*
-			 * Flat as using Reserve Hooks.
-			 */
-			economy = new ReserveEconomyAdapter(((Reserve) economyProvider).economy());
-			setVersion(String.format("%s %s", ((Reserve) economyProvider).economy().name(), "via Reserve" ));
-			Type = EcoType.RESERVE;
-			return true;
 		}
 
 		/*
@@ -390,5 +365,16 @@ public class TownyEconomyHandler {
 	 */
 	public static Executor economyExecutor() {
 		return ECONOMY_EXECUTOR;
+	}
+	
+	@ApiStatus.Internal
+	public static EconomyProvider getProvider() {
+		return provider;
+	}
+	
+	@ApiStatus.Internal
+	@Nullable
+	public static EconomyAdapter activeAdapter() {
+		return economy;
 	}
 }

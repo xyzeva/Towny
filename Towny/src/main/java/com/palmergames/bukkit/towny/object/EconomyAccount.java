@@ -3,7 +3,6 @@ package com.palmergames.bukkit.towny.object;
 import com.palmergames.bukkit.towny.TownyEconomyHandler;
 import com.palmergames.bukkit.towny.object.economy.Account;
 import com.palmergames.bukkit.towny.object.economy.TownyServerAccount;
-import org.bukkit.World;
 
 import java.util.UUID;
 import java.util.function.Supplier;

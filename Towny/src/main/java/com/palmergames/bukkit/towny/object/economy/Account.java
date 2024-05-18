@@ -262,6 +262,9 @@ public abstract class Account implements Nameable, Identifiable {
 		this.name = name;
 	}
 	
+	/**
+	 * @apiNote The returned uuid's version may differ from the object this represents in the case of NPC accounts.
+	 */
 	@Override
 	public @NotNull UUID getUUID() {
 		return this.uuid;
@@ -414,26 +417,28 @@ public abstract class Account implements Nameable, Identifiable {
 	@ApiStatus.Internal
 	public @NotNull OfflinePlayer asOfflinePlayer() {
 		// This account could belong to an online player
-		if (this instanceof EconomyAccount) {
+		if (this instanceof EconomyAccount && this.uuid.version() != 2) {
 			final Player player = Bukkit.getServer().getPlayer(this.uuid);
 			if (player != null)
 				return player;
 		}
 		
-		UUID uuid = this.uuid;
-		
-		if (this instanceof BankAccount) {
-			// Change the version byte to indicate that this account doesn't belong to a real player
-			uuid = JavaUtil.changeUUIDVersion(uuid, 2);
-		}
-		
 		try {
-			final Object gameProfile = GAMEPROFILE_CONSTRUCTOR.invoke(uuid, this.name);
+			final Object gameProfile = GAMEPROFILE_CONSTRUCTOR.invoke(this.uuid, this.name);
 			
 			return (OfflinePlayer) OFFLINEPLAYER_CONSTRUCTOR.invoke(Bukkit.getServer(), gameProfile);
 		} catch (Throwable throwable) {
 			Towny.getPlugin().getLogger().log(Level.WARNING, "An exception occurred when creating offline player for account " + this.getUUID(), throwable);
 			return Bukkit.getServer().getOfflinePlayer(this.uuid); // panic
 		}
+	}
+	
+	@ApiStatus.Internal
+	public static UUID modifyNPCUUID(final UUID uuid) {
+		final int version = TownySettings.getInt(ConfigNodes.ECO_ADVANCED_NPC_UUID_VERSION);
+		if (version < 0 || version > 15)
+			return uuid;
+		
+		return JavaUtil.changeUUIDVersion(uuid, version);
 	}
 }

@@ -1,7 +1,6 @@
 package com.palmergames.bukkit.towny.object.economy.adapter;
 
 import com.palmergames.bukkit.towny.object.economy.Account;
-import org.bukkit.World;
 import org.jetbrains.annotations.ApiStatus;
 
 /**
@@ -10,6 +9,8 @@ import org.jetbrains.annotations.ApiStatus;
  */
 @ApiStatus.Internal
 public interface EconomyAdapter {
+	String name();
+	
 	/**
 	 * Attempts to add money to an account.
 	 * 
