@@ -413,12 +413,22 @@ public abstract class Account implements Nameable, Identifiable {
 	
 	@ApiStatus.Internal
 	public @NotNull OfflinePlayer asOfflinePlayer() {
-		final Player player = Bukkit.getServer().getPlayer(this.uuid);
-		if (player != null)
-			return player;
+		// This account could belong to an online player
+		if (this instanceof EconomyAccount) {
+			final Player player = Bukkit.getServer().getPlayer(this.uuid);
+			if (player != null)
+				return player;
+		}
+		
+		UUID uuid = this.uuid;
+		
+		if (this instanceof BankAccount) {
+			// Change the version byte to indicate that this account doesn't belong to a real player
+			uuid = JavaUtil.changeUUIDVersion(uuid, 2);
+		}
 		
 		try {
-			final Object gameProfile = GAMEPROFILE_CONSTRUCTOR.invoke(this.uuid, this.name);
+			final Object gameProfile = GAMEPROFILE_CONSTRUCTOR.invoke(uuid, this.name);
 			
 			return (OfflinePlayer) OFFLINEPLAYER_CONSTRUCTOR.invoke(Bukkit.getServer(), gameProfile);
 		} catch (Throwable throwable) {
