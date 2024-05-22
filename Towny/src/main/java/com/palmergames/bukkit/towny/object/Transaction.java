@@ -25,6 +25,16 @@ public class Transaction {
 		return account.getName();
 	}
 
+	/**
+	 * @return the TownyObject, ie Town, Nation, Resident behind this Transaction's
+	 *         Account, or null if it involves the
+	 *         {@link EconomyAccount#SERVER_ACCOUNT}.
+	 */
+	@Nullable
+	public TownyObject getTownyObject() {
+		return account.getTownyObject();
+	}
+
 	@Nullable
 	public Player getPlayer() {
 		return Bukkit.getServer().getPlayerExact(getName());

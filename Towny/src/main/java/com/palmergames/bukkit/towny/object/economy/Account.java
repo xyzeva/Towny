@@ -37,7 +37,7 @@ public abstract class Account implements Nameable {
 	
 	public Account(TownyObject townyObject, String name) {
 		this.name = name;
-		this.townyObject = null;
+		this.townyObject = townyObject;
 		
 		// ALL account transactions will route auditing data through this
 		// central auditor.
