@@ -8,12 +8,14 @@ import com.palmergames.bukkit.towny.object.economy.Account;
 
 public class Transaction {
 	private final TransactionType type;
-	private final Account account;
+	private final Account receivingAccount;
+	private final Account sendingAccount;
 	private final double amount;
 	
-	public Transaction(TransactionType type, Account account, double amount) {
+	public Transaction(TransactionType type, Account sendingAccount, Account receivingAccount, double amount) {
 		this.type = type;
-		this.account = account;
+		this.sendingAccount = sendingAccount;
+		this.receivingAccount = receivingAccount;
 		this.amount = amount;
 	}
 
@@ -22,7 +24,15 @@ public class Transaction {
 	}
 
 	public String getName() {
-		return account.getName();
+		return receivingAccount.getName();
+	}
+
+	public Account getReceivingAccount() {
+		return receivingAccount;
+	}
+
+	public Account getSendingAccount() {
+		return sendingAccount;
 	}
 
 	/**
@@ -31,12 +41,12 @@ public class Transaction {
 	 */
 	@Nullable
 	public TownyObject getTownyObject() {
-		return account.getTownyObject();
+		return receivingAccount.getTownyObject();
 	}
 
 	@Nullable
 	public Player getPlayer() {
-		return Bukkit.getServer().getPlayerExact(getName());
+		return Bukkit.getServer().getPlayerExact(getSendingAccount().getName());
 	}
 
 	public double getAmount() {

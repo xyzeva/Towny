@@ -210,7 +210,7 @@ public class TownyEconomyHandler {
 	
 	private static boolean runPreChecks(Transaction transaction, String accountName) {
 		TownyPreTransactionEvent preEvent = new TownyPreTransactionEvent(transaction);
-		if (BukkitTools.isEventCancelled(preEvent)) {
+		if (BukkitTools.isEventCancelled(preEvent) && transaction.getPlayer() != null) {
 			TownyMessaging.sendErrorMsg(transaction.getPlayer(), preEvent.getCancelMessage());
 			return false;
 		}
@@ -230,7 +230,7 @@ public class TownyEconomyHandler {
 	 */
 	public static boolean subtract(Account account, double amount, World world) {
 
-		Transaction transaction = new Transaction(TransactionType.SUBTRACT, account, amount);
+		Transaction transaction = new Transaction(TransactionType.SUBTRACT, account, null, amount);
 		TownyTransactionEvent event = new TownyTransactionEvent(transaction);
 		
 		if (!runPreChecks(transaction, account.getName())) {
@@ -255,7 +255,7 @@ public class TownyEconomyHandler {
 	 */
 	public static boolean add(Account account, double amount, World world) {
 
-		Transaction transaction = new Transaction(TransactionType.ADD, account, amount);
+		Transaction transaction = new Transaction(TransactionType.ADD, null, account, amount);
 		TownyTransactionEvent event = new TownyTransactionEvent(transaction);
 
 		if (!runPreChecks(transaction, account.getName())) {
