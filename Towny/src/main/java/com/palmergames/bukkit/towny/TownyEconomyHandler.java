@@ -224,8 +224,7 @@ public class TownyEconomyHandler {
 	/**
 	 * Attempts to remove an amount from an account
 	 * 
-	 * @param townyObject the TownyObject involved
-	 * @param accountName name of the account to modify
+	 * @param account the Account losing money.
 	 * @param amount amount of currency to remove from the account
 	 * @param world name of the world in which to check in (TNE Reserve)   
 	 * @return true if successful
@@ -250,8 +249,7 @@ public class TownyEconomyHandler {
 	/**
 	 * Add funds to an account.
 	 * 
-	 * @param townyObject the TownyObject involved
-	 * @param accountName account to add funds to
+	 * @param account the Account receiving money.
 	 * @param amount amount of currency to add
 	 * @param world name of world (for TNE Reserve)
 	 * @return true if successful
