@@ -4,7 +4,6 @@ import com.palmergames.bukkit.config.ConfigNodes;
 import com.palmergames.bukkit.towny.event.economy.TownyPreTransactionEvent;
 import com.palmergames.bukkit.towny.event.economy.TownyTransactionEvent;
 import com.palmergames.bukkit.towny.object.economy.adapter.ReserveEconomyAdapter;
-import com.palmergames.bukkit.towny.object.EconomyAccount;
 import com.palmergames.bukkit.towny.object.Nation;
 import com.palmergames.bukkit.towny.object.Resident;
 import com.palmergames.bukkit.towny.object.Town;
@@ -303,7 +302,7 @@ public class TownyEconomyHandler {
 	 * @return A boolean indicating success.
 	 */
 	public static boolean addToServer(double amount, World world) {
-		return add(EconomyAccount.SERVER_ACCOUNT, amount, world);
+		return add(Account.SERVER_ACCOUNT, amount, world);
 	}
 
 	/**
@@ -314,7 +313,7 @@ public class TownyEconomyHandler {
 	 * @return A boolean indicating success.
 	 */
 	public static boolean subtractFromServer(double amount, World world) {
-		return subtract(EconomyAccount.SERVER_ACCOUNT, amount, world);
+		return subtract(Account.SERVER_ACCOUNT, amount, world);
 	}
 	
 	private static void checkNewAccount(String accountName) {

@@ -27,8 +27,7 @@ public class Transaction {
 
 	/**
 	 * @return the TownyObject, ie Town, Nation, Resident behind this Transaction's
-	 *         Account, or null if it involves the
-	 *         {@link EconomyAccount#SERVER_ACCOUNT}.
+	 *         Account, or null if it involves the {@link Account#SERVER_ACCOUNT}.
 	 */
 	@Nullable
 	public TownyObject getTownyObject() {

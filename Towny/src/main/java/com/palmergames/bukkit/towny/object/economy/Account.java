@@ -25,6 +25,7 @@ import java.util.logging.Level;
  * @see EconomyAccount
  */
 public abstract class Account implements Nameable {
+	public static final TownyServerAccount SERVER_ACCOUNT = new TownyServerAccount();
 	private static final long CACHE_TIMEOUT = TownySettings.getCachedBankTimeout();
 	private static final AccountObserver GLOBAL_OBSERVER = new GlobalAccountObserver();
 	private final List<AccountObserver> observers = new ArrayList<>();
@@ -114,13 +115,13 @@ public abstract class Account implements Nameable {
 	}
 	
 	protected synchronized boolean payToServer(double amount, String reason) {
-		notifyObserversDeposit(EconomyAccount.SERVER_ACCOUNT, amount, reason);
+		notifyObserversDeposit(Account.SERVER_ACCOUNT, amount, reason);
 		// Put it back into the server.
 		return TownyEconomyHandler.addToServer(amount, getBukkitWorld());
 	}
 	
 	protected synchronized boolean payFromServer(double amount, String reason) {
-		notifyObserversWithdraw(EconomyAccount.SERVER_ACCOUNT, amount, reason);
+		notifyObserversWithdraw(Account.SERVER_ACCOUNT, amount, reason);
 		// Remove it from the server economy.
 		return TownyEconomyHandler.subtractFromServer(amount, getBukkitWorld());
 	}
