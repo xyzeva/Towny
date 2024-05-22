@@ -7,6 +7,7 @@ import com.palmergames.bukkit.towny.TownySettings;
 import com.palmergames.bukkit.towny.object.EconomyAccount;
 import com.palmergames.bukkit.towny.object.EconomyHandler;
 import com.palmergames.bukkit.towny.object.Nameable;
+import com.palmergames.bukkit.towny.object.TownyObject;
 import com.palmergames.bukkit.util.BukkitTools;
 import org.bukkit.World;
 
@@ -27,14 +28,16 @@ public abstract class Account implements Nameable {
 	private static final long CACHE_TIMEOUT = TownySettings.getCachedBankTimeout();
 	private static final AccountObserver GLOBAL_OBSERVER = new GlobalAccountObserver();
 	private final List<AccountObserver> observers = new ArrayList<>();
+	private final TownyObject townyObject;
 	private AccountAuditor auditor;
 	protected CachedBalance cachedBalance = null;
 	
 	String name;
 	World world;
 	
-	public Account(String name) {
+	public Account(TownyObject townyObject, String name) {
 		this.name = name;
+		this.townyObject = null;
 		
 		// ALL account transactions will route auditing data through this
 		// central auditor.
@@ -49,8 +52,8 @@ public abstract class Account implements Nameable {
 		}
 	}
 	
-	public Account(String name, World world) {
-		this(name);
+	public Account(TownyObject townyObject, String name, World world) {
+		this(townyObject, name);
 		this.world = world;
 	}
 	
@@ -217,6 +220,13 @@ public abstract class Account implements Nameable {
 				TownyEconomyHandler.addToServer(balance, getBukkitWorld());
 		}
 		TownyEconomyHandler.removeAccount(getName());
+	}
+
+	/**
+	 * @return the townyObject that this Account represents.
+	 */
+	public TownyObject getTownyObject() {
+		return townyObject;
 	}
 
 	@Override

@@ -14,7 +14,7 @@ public class TownyServerAccount extends Account {
 	private final static String name = TownySettings.getString(ConfigNodes.ECO_CLOSED_ECONOMY_SERVER_ACCOUNT);
 
 	public TownyServerAccount() {
-		super(name);
+		super(null, name);
 	}
 
 	public static UUID getUUID() {
@@ -23,11 +23,11 @@ public class TownyServerAccount extends Account {
 
 	@Override
 	protected synchronized boolean addMoney(double amount) {
-		return TownyEconomyHandler.add(null, getName(), amount, world);
+		return TownyEconomyHandler.add(this, amount, world);
 	}
 
 	@Override
 	protected synchronized boolean subtractMoney(double amount) {
-		return TownyEconomyHandler.subtract(null, getName(), amount, world);
+		return TownyEconomyHandler.subtract(this, amount, world);
 	}
 }

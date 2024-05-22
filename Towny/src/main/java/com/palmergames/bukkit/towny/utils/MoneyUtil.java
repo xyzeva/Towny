@@ -60,7 +60,7 @@ public class MoneyUtil {
 		try {
 			commonTests(amount, resident, town, player.getLocation(), false, true);
 			
-			Transaction transaction = new Transaction(TransactionType.WITHDRAW, resident, resident.getName(), amount);
+			Transaction transaction = new Transaction(TransactionType.WITHDRAW, resident.getAccount(), amount);
 			
 			BukkitTools.ifCancelledThenThrow(new TownPreTransactionEvent(town, transaction));
 			
@@ -81,7 +81,7 @@ public class MoneyUtil {
 		try {
 			commonTests(amount, resident, town, player.getLocation(), false, false);
 
-			Transaction transaction = new Transaction(TransactionType.DEPOSIT, resident, resident.getName(), amount);
+			Transaction transaction = new Transaction(TransactionType.DEPOSIT, resident.getAccount(), amount);
 			
 			BukkitTools.ifCancelledThenThrow(new TownPreTransactionEvent(town, transaction));
 			
@@ -108,7 +108,7 @@ public class MoneyUtil {
 		try {
 			commonTests(amount, resident, nation.getCapital(), player.getLocation(), true, true);
 
-			Transaction transaction = new Transaction(TransactionType.WITHDRAW, resident, resident.getName(), amount);
+			Transaction transaction = new Transaction(TransactionType.WITHDRAW, resident.getAccount(), amount);
 			
 			BukkitTools.ifCancelledThenThrow(new NationPreTransactionEvent(nation, transaction));
 
@@ -128,7 +128,7 @@ public class MoneyUtil {
 		try {
 			commonTests(amount, resident, nation.getCapital(), player.getLocation(), true, false);
 
-			Transaction transaction = new Transaction(TransactionType.DEPOSIT, resident, resident.getName(), amount);
+			Transaction transaction = new Transaction(TransactionType.DEPOSIT, resident.getAccount(), amount);
 			
 			BukkitTools.ifCancelledThenThrow(new NationPreTransactionEvent(nation, transaction));
 			

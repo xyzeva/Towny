@@ -14,28 +14,22 @@ import org.bukkit.World;
  */
 public class EconomyAccount extends Account {
 	public static final TownyServerAccount SERVER_ACCOUNT = new TownyServerAccount();
-	private Resident resident;
 	private World world;
 	
 	protected EconomyAccount(Resident resident, String name, World world) {
-		super(name);
-		this.resident = resident;
+		super(resident, name);
 		this.world = world;
 	}
 
 	@Override
 	protected synchronized boolean addMoney(double amount) {
-		return TownyEconomyHandler.add(resident, getName(), amount, world);
+		return TownyEconomyHandler.add(this, amount, world);
 		
 	}
 
 	@Override
 	protected synchronized boolean subtractMoney(double amount) {
-		return TownyEconomyHandler.subtract(resident, getName(), amount, world);
-	}
-
-	protected EconomyAccount(String name) {
-		super(name);
+		return TownyEconomyHandler.subtract(this, amount, world);
 	}
 
 	public World getWorld() {

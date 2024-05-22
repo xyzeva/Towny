@@ -4,12 +4,13 @@ import com.palmergames.bukkit.config.ConfigNodes;
 import com.palmergames.bukkit.towny.event.economy.TownyPreTransactionEvent;
 import com.palmergames.bukkit.towny.event.economy.TownyTransactionEvent;
 import com.palmergames.bukkit.towny.object.economy.adapter.ReserveEconomyAdapter;
+import com.palmergames.bukkit.towny.object.EconomyAccount;
 import com.palmergames.bukkit.towny.object.Nation;
 import com.palmergames.bukkit.towny.object.Resident;
 import com.palmergames.bukkit.towny.object.Town;
-import com.palmergames.bukkit.towny.object.TownyObject;
 import com.palmergames.bukkit.towny.object.Transaction;
 import com.palmergames.bukkit.towny.object.TransactionType;
+import com.palmergames.bukkit.towny.object.economy.Account;
 import com.palmergames.bukkit.towny.object.economy.TownyServerAccount;
 import com.palmergames.bukkit.towny.object.economy.adapter.EconomyAdapter;
 import com.palmergames.bukkit.towny.object.economy.adapter.VaultEconomyAdapter;
@@ -229,16 +230,16 @@ public class TownyEconomyHandler {
 	 * @param world name of the world in which to check in (TNE Reserve)   
 	 * @return true if successful
 	 */
-	public static boolean subtract(TownyObject townyObject, String accountName, double amount, World world) {
+	public static boolean subtract(Account account, double amount, World world) {
 
-		Transaction transaction = new Transaction(TransactionType.SUBTRACT, townyObject, accountName, amount);
+		Transaction transaction = new Transaction(TransactionType.SUBTRACT, account, amount);
 		TownyTransactionEvent event = new TownyTransactionEvent(transaction);
 		
-		if (!runPreChecks(transaction, accountName)) {
+		if (!runPreChecks(transaction, account.getName())) {
 			return false;
 		}
 		
-		if (economy.subtract(accountName, amount, world)) {
+		if (economy.subtract(account.getName(), amount, world)) {
 			BukkitTools.fireEvent(event);
 			return true;
 		}
@@ -255,16 +256,16 @@ public class TownyEconomyHandler {
 	 * @param world name of world (for TNE Reserve)
 	 * @return true if successful
 	 */
-	public static boolean add(TownyObject townyObject, String accountName, double amount, World world) {
+	public static boolean add(Account account, double amount, World world) {
 
-		Transaction transaction = new Transaction(TransactionType.ADD, townyObject, accountName, amount);
+		Transaction transaction = new Transaction(TransactionType.ADD, account, amount);
 		TownyTransactionEvent event = new TownyTransactionEvent(transaction);
 
-		if (!runPreChecks(transaction, accountName)) {
+		if (!runPreChecks(transaction, account.getName())) {
 			return false;
 		}
 
-		if (economy.add(accountName, amount, world)) {
+		if (economy.add(account.getName(), amount, world)) {
 			BukkitTools.fireEvent(event);
 			return true;
 		}
@@ -304,7 +305,7 @@ public class TownyEconomyHandler {
 	 * @return A boolean indicating success.
 	 */
 	public static boolean addToServer(double amount, World world) {
-		return add(null, getServerAccount(), amount, world);
+		return add(EconomyAccount.SERVER_ACCOUNT, amount, world);
 	}
 
 	/**
@@ -315,7 +316,7 @@ public class TownyEconomyHandler {
 	 * @return A boolean indicating success.
 	 */
 	public static boolean subtractFromServer(double amount, World world) {
-		return subtract(null, getServerAccount(), amount, world);
+		return subtract(EconomyAccount.SERVER_ACCOUNT, amount, world);
 	}
 	
 	private static void checkNewAccount(String accountName) {
