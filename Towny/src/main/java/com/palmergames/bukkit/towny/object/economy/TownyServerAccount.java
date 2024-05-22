@@ -23,11 +23,11 @@ public class TownyServerAccount extends Account {
 
 	@Override
 	protected synchronized boolean addMoney(double amount) {
-		return TownyEconomyHandler.add(getName(), amount, world);
+		return TownyEconomyHandler.add(null, getName(), amount, world);
 	}
 
 	@Override
 	protected synchronized boolean subtractMoney(double amount) {
-		return TownyEconomyHandler.subtract(getName(), amount, world);
+		return TownyEconomyHandler.subtract(null, getName(), amount, world);
 	}
 }

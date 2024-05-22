@@ -7,6 +7,7 @@ import com.palmergames.bukkit.towny.object.economy.adapter.ReserveEconomyAdapter
 import com.palmergames.bukkit.towny.object.Nation;
 import com.palmergames.bukkit.towny.object.Resident;
 import com.palmergames.bukkit.towny.object.Town;
+import com.palmergames.bukkit.towny.object.TownyObject;
 import com.palmergames.bukkit.towny.object.Transaction;
 import com.palmergames.bukkit.towny.object.TransactionType;
 import com.palmergames.bukkit.towny.object.economy.TownyServerAccount;
@@ -18,9 +19,7 @@ import com.palmergames.bukkit.util.Colors;
 import net.milkbowl.vault.economy.Economy;
 import net.tnemc.core.Reserve;
 
-import org.bukkit.Bukkit;
 import org.bukkit.World;
-import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.jetbrains.annotations.Nullable;
@@ -224,15 +223,15 @@ public class TownyEconomyHandler {
 	/**
 	 * Attempts to remove an amount from an account
 	 * 
+	 * @param townyObject the TownyObject involved
 	 * @param accountName name of the account to modify
 	 * @param amount amount of currency to remove from the account
 	 * @param world name of the world in which to check in (TNE Reserve)   
 	 * @return true if successful
 	 */
-	public static boolean subtract(String accountName, double amount, World world) {
+	public static boolean subtract(TownyObject townyObject, String accountName, double amount, World world) {
 
-		Player player = Bukkit.getServer().getPlayerExact(accountName);
-		Transaction transaction = new Transaction(TransactionType.SUBTRACT, player, amount);
+		Transaction transaction = new Transaction(TransactionType.SUBTRACT, townyObject, accountName, amount);
 		TownyTransactionEvent event = new TownyTransactionEvent(transaction);
 		
 		if (!runPreChecks(transaction, accountName)) {
@@ -250,15 +249,15 @@ public class TownyEconomyHandler {
 	/**
 	 * Add funds to an account.
 	 * 
+	 * @param townyObject the TownyObject involved
 	 * @param accountName account to add funds to
 	 * @param amount amount of currency to add
 	 * @param world name of world (for TNE Reserve)
 	 * @return true if successful
 	 */
-	public static boolean add(String accountName, double amount, World world) {
+	public static boolean add(TownyObject townyObject, String accountName, double amount, World world) {
 
-		Player player = Bukkit.getServer().getPlayerExact(accountName);
-		Transaction transaction = new Transaction(TransactionType.ADD, player, amount);
+		Transaction transaction = new Transaction(TransactionType.ADD, townyObject, accountName, amount);
 		TownyTransactionEvent event = new TownyTransactionEvent(transaction);
 
 		if (!runPreChecks(transaction, accountName)) {
@@ -305,7 +304,7 @@ public class TownyEconomyHandler {
 	 * @return A boolean indicating success.
 	 */
 	public static boolean addToServer(double amount, World world) {
-		return add(getServerAccount(), amount, world);
+		return add(null, getServerAccount(), amount, world);
 	}
 
 	/**
@@ -316,7 +315,7 @@ public class TownyEconomyHandler {
 	 * @return A boolean indicating success.
 	 */
 	public static boolean subtractFromServer(double amount, World world) {
-		return subtract(getServerAccount(), amount, world);
+		return subtract(null, getServerAccount(), amount, world);
 	}
 	
 	private static void checkNewAccount(String accountName) {

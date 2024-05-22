@@ -71,7 +71,7 @@ public class BankAccount extends Account {
 		}
 
 		// Otherwise continue like normal.
-		return TownyEconomyHandler.subtract(getName(), amount, world);
+		return TownyEconomyHandler.subtract(government, getName(), amount, world);
 	}
 
 	@Override
@@ -84,7 +84,7 @@ public class BankAccount extends Account {
 			return removeDebt(amount);
 
 		// Otherwise continue like normal.
-		return TownyEconomyHandler.add(getName(), amount, world);
+		return TownyEconomyHandler.add(government, getName(), amount, world);
 	}
 
 	@Override
