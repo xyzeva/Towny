@@ -23,25 +23,12 @@ public class Transaction {
 		return type;
 	}
 
-	public String getName() {
-		return receivingAccount.getName();
-	}
-
 	public Account getReceivingAccount() {
 		return receivingAccount;
 	}
 
 	public Account getSendingAccount() {
 		return sendingAccount;
-	}
-
-	/**
-	 * @return the TownyObject, ie Town, Nation, Resident behind this Transaction's
-	 *         Account, or null if it involves the {@link Account#SERVER_ACCOUNT}.
-	 */
-	@Nullable
-	public TownyObject getTownyObject() {
-		return receivingAccount.getTownyObject();
 	}
 
 	@Nullable

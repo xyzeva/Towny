@@ -22,6 +22,7 @@ import org.jetbrains.annotations.Nullable;
 public class BankAccount extends Account {
 	
 	private double debtCap;
+	private Government government;
 
 	/**
 	 * Constructor for a {@link Government} BankAccount. Governments can be Towns or Nations.
@@ -32,6 +33,7 @@ public class BankAccount extends Account {
 	 */
 	public BankAccount(String name, World world, Government government) {
 		super(government, name, world);
+		this.government = government;
 	}
 
 	/**
@@ -40,7 +42,7 @@ public class BankAccount extends Account {
 	 * @return the max amount allowed in this account.
 	 */
 	public double getBalanceCap() {
-		return ((Government) getTownyObject()).getBankCap();
+		return government.getBankCap();
 	}
 
 	@Override
@@ -113,7 +115,7 @@ public class BankAccount extends Account {
 	 * return true if this BankAcount is one belonging to a Town.
 	 */
 	private boolean isTownAccount() {
-		return getTownyObject() instanceof Town;
+		return government instanceof Town;
 	}
 
 	/**
@@ -121,7 +123,7 @@ public class BankAccount extends Account {
 	 */
 	@Nullable
 	private Town getTown() {
-		return isTownAccount() ? (Town) getTownyObject() : null;
+		return isTownAccount() ? (Town) government : null;
 	}
 
 	/*
@@ -150,7 +152,7 @@ public class BankAccount extends Account {
 
 	@Nullable
 	private Resident getGovernmentOwner() {
-		return getTownyObject() instanceof Town town ? town.getMayor() : getTownyObject() instanceof Nation nation ? nation.getKing() : null;
+		return government instanceof Town town ? town.getMayor() : government instanceof Nation nation ? nation.getKing() : null;
 	}
 
 	/*
@@ -163,7 +165,7 @@ public class BankAccount extends Account {
 	 * @return true if in debt, false otherwise.
 	 */
 	public boolean isBankrupt() {
-		return getTownyObject() instanceof Town town && town.isBankrupt();
+		return government instanceof Town town && town.isBankrupt();
 	}
 
 	/**
