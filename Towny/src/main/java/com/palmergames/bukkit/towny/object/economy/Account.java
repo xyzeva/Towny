@@ -99,7 +99,7 @@ public abstract class Account implements Nameable {
 			if (TownySettings.getBoolean(ConfigNodes.ECO_CLOSED_ECONOMY_ENABLED))
 				return payToServer(amount, reason);
 
-			BukkitTools.fireEvent(new TownyTransactionEvent(new Transaction(TransactionType.SUBTRACT, null, this, amount)));
+			BukkitTools.fireEvent(new TownyTransactionEvent(new Transaction(TransactionType.SUBTRACT, this, null, amount)));
 			return true;
 		}
 		
