@@ -24,6 +24,7 @@ public class EconomyAccount extends Account {
 
 	@Override
 	protected synchronized boolean addMoney(double amount) {
+		
 		return TownyEconomyHandler.add(this, amount, world);
 		
 	}

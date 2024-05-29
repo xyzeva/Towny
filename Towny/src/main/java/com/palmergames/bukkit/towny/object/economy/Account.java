@@ -4,9 +4,12 @@ import com.palmergames.bukkit.config.ConfigNodes;
 import com.palmergames.bukkit.towny.Towny;
 import com.palmergames.bukkit.towny.TownyEconomyHandler;
 import com.palmergames.bukkit.towny.TownySettings;
+import com.palmergames.bukkit.towny.event.economy.TownyTransactionEvent;
 import com.palmergames.bukkit.towny.object.EconomyAccount;
 import com.palmergames.bukkit.towny.object.EconomyHandler;
 import com.palmergames.bukkit.towny.object.Nameable;
+import com.palmergames.bukkit.towny.object.Transaction;
+import com.palmergames.bukkit.towny.object.TransactionType;
 import com.palmergames.bukkit.util.BukkitTools;
 import org.bukkit.World;
 
@@ -75,6 +78,7 @@ public abstract class Account implements Nameable {
 			if (TownySettings.getBoolean(ConfigNodes.ECO_CLOSED_ECONOMY_ENABLED))
 				return payFromServer(amount, reason);
 
+			BukkitTools.fireEvent(new TownyTransactionEvent(new Transaction(TransactionType.ADD, null, this, amount)));
 			return true;
 		}
 		
@@ -95,6 +99,7 @@ public abstract class Account implements Nameable {
 			if (TownySettings.getBoolean(ConfigNodes.ECO_CLOSED_ECONOMY_ENABLED))
 				return payToServer(amount, reason);
 
+			BukkitTools.fireEvent(new TownyTransactionEvent(new Transaction(TransactionType.SUBTRACT, null, this, amount)));
 			return true;
 		}
 		
@@ -116,13 +121,13 @@ public abstract class Account implements Nameable {
 	protected synchronized boolean payToServer(double amount, String reason) {
 		notifyObserversDeposit(Account.SERVER_ACCOUNT, amount, reason);
 		// Put it back into the server.
-		return TownyEconomyHandler.addToServer(amount, getBukkitWorld());
+		return Account.SERVER_ACCOUNT.addToServer(this, amount, getBukkitWorld());
 	}
 	
 	protected synchronized boolean payFromServer(double amount, String reason) {
 		notifyObserversWithdraw(Account.SERVER_ACCOUNT, amount, reason);
 		// Remove it from the server economy.
-		return TownyEconomyHandler.subtractFromServer(amount, getBukkitWorld());
+		return Account.SERVER_ACCOUNT.subtractFromServer(this, amount, getBukkitWorld());
 	}
 
 	/**
@@ -139,7 +144,11 @@ public abstract class Account implements Nameable {
 			return false;
 		}
 
-		return withdraw(amount, reason) && collector.deposit(amount, reason);
+		boolean success = withdraw(amount, reason) && collector.deposit(amount, reason);
+		if (success)
+			BukkitTools.fireEvent(new TownyTransactionEvent(new Transaction(TransactionType.ADD, this, collector, amount)));
+
+		return success;
 	}
 
 	/**
@@ -217,7 +226,7 @@ public abstract class Account implements Nameable {
 		if (TownySettings.isEcoClosedEconomyEnabled()) {
 			double balance = TownyEconomyHandler.getBalance(getName(), getBukkitWorld());
 			if (balance > 0)
-				TownyEconomyHandler.addToServer(balance, getBukkitWorld());
+				Account.SERVER_ACCOUNT.addToServer(this, balance, getBukkitWorld());
 		}
 		TownyEconomyHandler.removeAccount(getName());
 	}

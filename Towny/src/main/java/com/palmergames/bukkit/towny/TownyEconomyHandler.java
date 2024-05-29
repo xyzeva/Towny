@@ -2,7 +2,6 @@ package com.palmergames.bukkit.towny;
 
 import com.palmergames.bukkit.config.ConfigNodes;
 import com.palmergames.bukkit.towny.event.economy.TownyPreTransactionEvent;
-import com.palmergames.bukkit.towny.event.economy.TownyTransactionEvent;
 import com.palmergames.bukkit.towny.object.economy.adapter.ReserveEconomyAdapter;
 import com.palmergames.bukkit.towny.object.Nation;
 import com.palmergames.bukkit.towny.object.Resident;
@@ -218,7 +217,6 @@ public class TownyEconomyHandler {
 		checkNewAccount(accountName);
 		return true;
 	}
-	
 
 	/**
 	 * Attempts to remove an amount from an account
@@ -230,15 +228,15 @@ public class TownyEconomyHandler {
 	 */
 	public static boolean subtract(Account account, double amount, World world) {
 
-		Transaction transaction = new Transaction(TransactionType.SUBTRACT, account, null, amount);
-		TownyTransactionEvent event = new TownyTransactionEvent(transaction);
 		
-		if (!runPreChecks(transaction, account.getName())) {
+//		TownyTransactionEvent event = new TownyTransactionEvent(transaction);
+		
+		if (!runPreChecks(new Transaction(TransactionType.SUBTRACT, account, null, amount), account.getName())) {
 			return false;
 		}
 		
 		if (economy.subtract(account.getName(), amount, world)) {
-			BukkitTools.fireEvent(event);
+//			BukkitTools.fireEvent(event);
 			return true;
 		}
 		
@@ -255,15 +253,15 @@ public class TownyEconomyHandler {
 	 */
 	public static boolean add(Account account, double amount, World world) {
 
-		Transaction transaction = new Transaction(TransactionType.ADD, null, account, amount);
-		TownyTransactionEvent event = new TownyTransactionEvent(transaction);
+		
+//		TownyTransactionEvent event = new TownyTransactionEvent(transaction);
 
-		if (!runPreChecks(transaction, account.getName())) {
+		if (!runPreChecks(new Transaction(TransactionType.ADD, null, account, amount), account.getName())) {
 			return false;
 		}
 
 		if (economy.add(account.getName(), amount, world)) {
-			BukkitTools.fireEvent(event);
+//			BukkitTools.fireEvent(event);
 			return true;
 		}
 
@@ -294,27 +292,6 @@ public class TownyEconomyHandler {
 
 	}
 
-	/**
-	 * Adds money to the server account (used for towny closed economy.)
-	 * 
-	 * @param amount The amount to deposit.
-	 * @param world The world of the deposit.
-	 * @return A boolean indicating success.
-	 */
-	public static boolean addToServer(double amount, World world) {
-		return add(Account.SERVER_ACCOUNT, amount, world);
-	}
-
-	/**
-	 * Removes money to the server account (used for towny closed economy.)
-	 *
-	 * @param amount The amount to withdraw.
-	 * @param world The world of the withdraw.
-	 * @return A boolean indicating success.
-	 */
-	public static boolean subtractFromServer(double amount, World world) {
-		return subtract(Account.SERVER_ACCOUNT, amount, world);
-	}
 	
 	private static void checkNewAccount(String accountName) {
 		// Check if the account exists, if not create one.
