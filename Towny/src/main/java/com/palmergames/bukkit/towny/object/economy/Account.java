@@ -119,15 +119,19 @@ public abstract class Account implements Nameable {
 	}
 	
 	protected synchronized boolean payToServer(double amount, String reason) {
-		notifyObserversDeposit(Account.SERVER_ACCOUNT, amount, reason);
 		// Put it back into the server.
-		return Account.SERVER_ACCOUNT.addToServer(this, amount, getBukkitWorld());
+		boolean success = Account.SERVER_ACCOUNT.addToServer(this, amount, getBukkitWorld());
+		if (success)
+			notifyObserversDeposit(Account.SERVER_ACCOUNT, amount, reason);
+		return success;
 	}
 	
 	protected synchronized boolean payFromServer(double amount, String reason) {
-		notifyObserversWithdraw(Account.SERVER_ACCOUNT, amount, reason);
 		// Remove it from the server economy.
-		return Account.SERVER_ACCOUNT.subtractFromServer(this, amount, getBukkitWorld());
+		boolean success = Account.SERVER_ACCOUNT.subtractFromServer(this, amount, getBukkitWorld());
+		if (success)
+			notifyObserversWithdraw(Account.SERVER_ACCOUNT, amount, reason);
+		return success;
 	}
 
 	/**

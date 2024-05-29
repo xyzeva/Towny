@@ -54,7 +54,7 @@ public class TownyServerAccount extends Account implements EconomyHandler {
 	 * @return A boolean indicating success.
 	 */
 	public boolean addToServer(Account account, double amount, World world) {
-		boolean success = TownyEconomyHandler.add(this, amount, world);;
+		boolean success = TownyEconomyHandler.add(this, amount, world);
 		if (success)
 			BukkitTools.fireEvent(new TownyTransactionEvent(new Transaction(TransactionType.ADD, account, Account.SERVER_ACCOUNT, amount)));
 
