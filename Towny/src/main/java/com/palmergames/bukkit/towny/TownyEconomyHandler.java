@@ -10,6 +10,7 @@ import com.palmergames.bukkit.towny.object.Transaction;
 import com.palmergames.bukkit.towny.object.TransactionType;
 import com.palmergames.bukkit.towny.object.economy.Account;
 import com.palmergames.bukkit.towny.object.economy.TownyServerAccount;
+import com.palmergames.bukkit.towny.object.economy.TownyServerAccountEconomyHandler;
 import com.palmergames.bukkit.towny.object.economy.adapter.EconomyAdapter;
 import com.palmergames.bukkit.towny.object.economy.adapter.VaultEconomyAdapter;
 import com.palmergames.bukkit.util.BukkitTools;
@@ -94,6 +95,12 @@ public class TownyEconomyHandler {
 
 	public static void initialize(Towny plugin) {
 		TownyEconomyHandler.plugin = plugin;
+	}
+
+	public static TownyServerAccount initializeTownyServerAccount() {
+		TownyServerAccountEconomyHandler economyHandler = new TownyServerAccount();
+		TownyServerAccount account = new TownyServerAccount(economyHandler);
+		return account;
 	}
 
 	/**

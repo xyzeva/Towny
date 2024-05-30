@@ -27,7 +27,7 @@ import java.util.logging.Level;
  * @see EconomyAccount
  */
 public abstract class Account implements Nameable {
-	public static final TownyServerAccount SERVER_ACCOUNT = new TownyServerAccount();
+	public static final TownyServerAccount SERVER_ACCOUNT = TownyEconomyHandler.initializeTownyServerAccount();
 	private static final long CACHE_TIMEOUT = TownySettings.getCachedBankTimeout();
 	private static final AccountObserver GLOBAL_OBSERVER = new GlobalAccountObserver();
 	private final List<AccountObserver> observers = new ArrayList<>();

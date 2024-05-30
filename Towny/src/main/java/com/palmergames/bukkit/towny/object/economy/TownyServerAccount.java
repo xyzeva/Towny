@@ -8,7 +8,6 @@ import com.palmergames.bukkit.config.ConfigNodes;
 import com.palmergames.bukkit.towny.TownyEconomyHandler;
 import com.palmergames.bukkit.towny.TownySettings;
 import com.palmergames.bukkit.towny.event.economy.TownyTransactionEvent;
-import com.palmergames.bukkit.towny.object.EconomyHandler;
 import com.palmergames.bukkit.towny.object.Transaction;
 import com.palmergames.bukkit.towny.object.TransactionType;
 import com.palmergames.bukkit.util.BukkitTools;
@@ -16,7 +15,7 @@ import com.palmergames.bukkit.util.BukkitTools;
 /**
  * For internal use only.
  */
-public class TownyServerAccount extends Account implements EconomyHandler {
+public class TownyServerAccount extends Account implements TownyServerAccountEconomyHandler {
 	
 	private final static UUID uuid = UUID.fromString("a73f39b0-1b7c-4930-b4a3-ce101812d926");
 	private final static String name = TownySettings.getString(ConfigNodes.ECO_CLOSED_ECONOMY_SERVER_ACCOUNT);
@@ -25,9 +24,8 @@ public class TownyServerAccount extends Account implements EconomyHandler {
 		super(null, name);
 	}
 
-	@Override
-	public Account getAccount() {
-		return this;
+	public TownyServerAccount(TownyServerAccountEconomyHandler economyHandler) {
+		super(economyHandler, name);
 	}
 
 	public static UUID getUUID() {
@@ -74,6 +72,11 @@ public class TownyServerAccount extends Account implements EconomyHandler {
 			BukkitTools.fireEvent(new TownyTransactionEvent(new Transaction(TransactionType.SUBTRACT, Account.SERVER_ACCOUNT, account, amount)));
 
 		return success;
+	}
+
+	@Override
+	public Account getAccount() {
+		return this;
 	}
 
 }
