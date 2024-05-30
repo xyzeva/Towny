@@ -4,12 +4,10 @@ import com.palmergames.bukkit.config.ConfigNodes;
 import com.palmergames.bukkit.towny.Towny;
 import com.palmergames.bukkit.towny.TownyEconomyHandler;
 import com.palmergames.bukkit.towny.TownySettings;
-import com.palmergames.bukkit.towny.event.economy.TownyTransactionEvent;
 import com.palmergames.bukkit.towny.object.EconomyAccount;
 import com.palmergames.bukkit.towny.object.EconomyHandler;
 import com.palmergames.bukkit.towny.object.Nameable;
-import com.palmergames.bukkit.towny.object.Transaction;
-import com.palmergames.bukkit.towny.object.TransactionType;
+import com.palmergames.bukkit.towny.object.economy.transaction.Transaction;
 import com.palmergames.bukkit.util.BukkitTools;
 import org.bukkit.World;
 
@@ -78,7 +76,7 @@ public abstract class Account implements Nameable {
 			if (TownySettings.getBoolean(ConfigNodes.ECO_CLOSED_ECONOMY_ENABLED))
 				return payFromServer(amount, reason);
 
-			BukkitTools.fireEvent(new TownyTransactionEvent(new Transaction(TransactionType.ADD, null, this, amount)));
+			BukkitTools.fireEvent(Transaction.add(amount).paidTo(this).asTownyTransactionEvent());
 			return true;
 		}
 		
@@ -99,7 +97,7 @@ public abstract class Account implements Nameable {
 			if (TownySettings.getBoolean(ConfigNodes.ECO_CLOSED_ECONOMY_ENABLED))
 				return payToServer(amount, reason);
 
-			BukkitTools.fireEvent(new TownyTransactionEvent(new Transaction(TransactionType.SUBTRACT, this, null, amount)));
+			BukkitTools.fireEvent(Transaction.subtract(amount).paidBy(this).asTownyTransactionEvent());
 			return true;
 		}
 		
@@ -150,8 +148,7 @@ public abstract class Account implements Nameable {
 
 		boolean success = withdraw(amount, reason) && collector.deposit(amount, reason);
 		if (success)
-			BukkitTools.fireEvent(new TownyTransactionEvent(new Transaction(TransactionType.ADD, this, collector, amount)));
-
+			BukkitTools.fireEvent(Transaction.add(amount).paidBy(this).paidTo(collector).asTownyTransactionEvent());
 		return success;
 	}
 

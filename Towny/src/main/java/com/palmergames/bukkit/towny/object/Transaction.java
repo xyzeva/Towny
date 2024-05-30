@@ -1,21 +1,20 @@
 package com.palmergames.bukkit.towny.object;
 
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import org.jetbrains.annotations.Nullable;
 
-import com.palmergames.bukkit.towny.object.economy.Account;
 
+/**
+ * @deprecated since 0.100.3.1 use {@link com.palmergames.bukkit.towny.object.economy.transaction.Transaction} instead.
+ */
+@Deprecated
 public class Transaction {
 	private final TransactionType type;
-	private final Account receivingAccount;
-	private final Account sendingAccount;
+	private final Player player;
 	private final double amount;
 	
-	public Transaction(TransactionType type, Account sendingAccount, Account receivingAccount, double amount) {
+	public Transaction(TransactionType type, Player player, double amount) {
 		this.type = type;
-		this.sendingAccount = sendingAccount;
-		this.receivingAccount = receivingAccount;
+		this.player = player;
 		this.amount = amount;
 	}
 
@@ -23,17 +22,8 @@ public class Transaction {
 		return type;
 	}
 
-	public Account getReceivingAccount() {
-		return receivingAccount;
-	}
-
-	public Account getSendingAccount() {
-		return sendingAccount;
-	}
-
-	@Nullable
 	public Player getPlayer() {
-		return Bukkit.getServer().getPlayerExact(getSendingAccount().getName());
+		return player;
 	}
 
 	public double getAmount() {

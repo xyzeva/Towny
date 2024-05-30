@@ -7,9 +7,7 @@ import org.bukkit.World;
 import com.palmergames.bukkit.config.ConfigNodes;
 import com.palmergames.bukkit.towny.TownyEconomyHandler;
 import com.palmergames.bukkit.towny.TownySettings;
-import com.palmergames.bukkit.towny.event.economy.TownyTransactionEvent;
-import com.palmergames.bukkit.towny.object.Transaction;
-import com.palmergames.bukkit.towny.object.TransactionType;
+import com.palmergames.bukkit.towny.object.economy.transaction.Transaction;
 import com.palmergames.bukkit.util.BukkitTools;
 
 /**
@@ -54,7 +52,7 @@ public class TownyServerAccount extends Account implements TownyServerAccountEco
 	public boolean addToServer(Account account, double amount, World world) {
 		boolean success = TownyEconomyHandler.add(this, amount, world);
 		if (success)
-			BukkitTools.fireEvent(new TownyTransactionEvent(new Transaction(TransactionType.ADD, account, Account.SERVER_ACCOUNT, amount)));
+			BukkitTools.fireEvent(Transaction.add(amount).paidBy(account).paidToServer().asTownyTransactionEvent());
 
 		return success;
 	}
@@ -69,7 +67,7 @@ public class TownyServerAccount extends Account implements TownyServerAccountEco
 	public boolean subtractFromServer(Account account, double amount, World world) {
 		boolean success = TownyEconomyHandler.subtract(this, amount, world);
 		if (success)
-			BukkitTools.fireEvent(new TownyTransactionEvent(new Transaction(TransactionType.SUBTRACT, Account.SERVER_ACCOUNT, account, amount)));
+			BukkitTools.fireEvent(Transaction.subtract(amount).paidByServer().paidTo(account).asTownyTransactionEvent());
 
 		return success;
 	}

@@ -6,8 +6,7 @@ import com.palmergames.bukkit.towny.object.economy.adapter.ReserveEconomyAdapter
 import com.palmergames.bukkit.towny.object.Nation;
 import com.palmergames.bukkit.towny.object.Resident;
 import com.palmergames.bukkit.towny.object.Town;
-import com.palmergames.bukkit.towny.object.Transaction;
-import com.palmergames.bukkit.towny.object.TransactionType;
+import com.palmergames.bukkit.towny.object.economy.transaction.Transaction;
 import com.palmergames.bukkit.towny.object.economy.Account;
 import com.palmergames.bukkit.towny.object.economy.TownyServerAccount;
 import com.palmergames.bukkit.towny.object.economy.TownyServerAccountEconomyHandler;
@@ -238,7 +237,7 @@ public class TownyEconomyHandler {
 		
 //		TownyTransactionEvent event = new TownyTransactionEvent(transaction);
 		
-		if (!runPreChecks(new Transaction(TransactionType.SUBTRACT, account, null, amount), account.getName())) {
+		if (!runPreChecks(Transaction.subtract(amount).paidBy(account).build(), account.getName())) {
 			return false;
 		}
 		
@@ -263,7 +262,7 @@ public class TownyEconomyHandler {
 		
 //		TownyTransactionEvent event = new TownyTransactionEvent(transaction);
 
-		if (!runPreChecks(new Transaction(TransactionType.ADD, null, account, amount), account.getName())) {
+		if (!runPreChecks(Transaction.add(amount).paidTo(account).build(), account.getName())) {
 			return false;
 		}
 
