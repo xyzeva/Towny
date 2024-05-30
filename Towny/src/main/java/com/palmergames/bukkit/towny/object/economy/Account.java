@@ -233,7 +233,8 @@ public abstract class Account implements Nameable {
 	}
 
 	/**
-	 * @return the economyHandler that this Account represents. Could be a Resident, Town or Nation.
+	 * @return the EconomyHandler that this Account represents. Could be a Resident,
+	 *         Town, Nation or the TownyServerAccount.
 	 */
 	public EconomyHandler getEconomyHandler() {
 		return economyHandler;

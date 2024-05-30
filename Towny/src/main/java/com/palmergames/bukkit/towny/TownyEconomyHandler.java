@@ -234,15 +234,11 @@ public class TownyEconomyHandler {
 	 */
 	public static boolean subtract(Account account, double amount, World world) {
 
-		
-//		TownyTransactionEvent event = new TownyTransactionEvent(transaction);
-		
 		if (!runPreChecks(Transaction.subtract(amount).paidBy(account).build(), account.getName())) {
 			return false;
 		}
 		
 		if (economy.subtract(account.getName(), amount, world)) {
-//			BukkitTools.fireEvent(event);
 			return true;
 		}
 		
@@ -259,15 +255,11 @@ public class TownyEconomyHandler {
 	 */
 	public static boolean add(Account account, double amount, World world) {
 
-		
-//		TownyTransactionEvent event = new TownyTransactionEvent(transaction);
-
 		if (!runPreChecks(Transaction.add(amount).paidTo(account).build(), account.getName())) {
 			return false;
 		}
 
 		if (economy.add(account.getName(), amount, world)) {
-//			BukkitTools.fireEvent(event);
 			return true;
 		}
 

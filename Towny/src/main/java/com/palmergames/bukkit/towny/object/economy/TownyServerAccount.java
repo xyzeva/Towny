@@ -49,6 +49,7 @@ public class TownyServerAccount extends Account implements TownyServerAccountEco
 	 * @param world The world of the deposit.
 	 * @return A boolean indicating success.
 	 */
+	@Override
 	public boolean addToServer(Account account, double amount, World world) {
 		boolean success = TownyEconomyHandler.add(this, amount, world);
 		if (success)
@@ -64,6 +65,7 @@ public class TownyServerAccount extends Account implements TownyServerAccountEco
 	 * @param world The world of the withdraw.
 	 * @return A boolean indicating success.
 	 */
+	@Override
 	public boolean subtractFromServer(Account account, double amount, World world) {
 		boolean success = TownyEconomyHandler.subtract(this, amount, world);
 		if (success)
